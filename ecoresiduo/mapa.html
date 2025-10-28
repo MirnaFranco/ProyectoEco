@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoResiduos - Mapa</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+4g3N5m1UyxJkGux1x88g0fWgA7kJ+1LZ9r94qA4s="
+    crossorigin=""
+  />
+
+  <style>
+    #map { height: 100vh; width: 100%; }
+  </style>
+</head>
+<body class="flex">
+
+  <!-- Sidebar -->
+  <aside class="w-96 bg-white border-r p-4 flex flex-col gap-4">
+    <h2 class="text-xl font-bold">EcoResiduos — Contenedores</h2>
+
+    <div class="flex gap-2">
+      <select id="filtro" class="border rounded px-2 py-1 flex-1">
+        <option>Todos</option>
+        <option>Plástico</option>
+        <option>Vidrio</option>
+        <option>Papel</option>
+        <option>Cartón</option>
+      </select>
+      <button id="btnUbicacion" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+        Mi ubicación
+      </button>
+    </div>
+
+    <button id="btnCercano" class="px-3 py-1 border rounded">
+      Buscar contenedor más cercano
+    </button>
+
+    <div id="infoCercano" class="hidden p-2 bg-green-50 border rounded text-sm"></div>
+
+    <div class="flex-1 overflow-auto">
+      <h3 class="font-semibold mt-2 mb-1">Lista de contenedores</h3>
+      <ul id="listaContenedores" class="space-y-2"></ul>
+
+      <h3 class="font-semibold mt-4 mb-1">Eventos próximos</h3>
+      <ul id="listaEventos" class="space-y-2"></ul>
+    </div>
+  </aside>
+
+  <!-- Mapa -->
+  <main class="flex-1">
+    <div id="map"></div>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-o9N1jJQG+MfFQYziM1z7A1w9a8g3o9Qus0B0zXz1Hyg="
+    crossorigin=""
+  ></script>
+
+  <!-- Script principal -->
+  <script src="./mapa.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoResiduos - Verificar cuenta</title>
+  <link rel="icon" type="image/png" href="/ecoresiduo/assets/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-green-50 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white shadow-xl rounded-3xl flex flex-col md:flex-row w-11/12 md:w-3/4 max-w-4xl overflow-hidden">
+
+    <!-- Imagen / Avatar -->
+    <div class="bg-green-200 flex justify-center items-center p-8 md:w-1/2">
+      <img src="/ecoresiduo/assets/avatar.png" alt="EcoResiduos personaje" class="w-72">
+    </div>
+
+    <!-- Formulario de verificación -->
+    <div class="flex flex-col justify-center p-8 md:w-1/2">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">
+        Verifica tu <span class="text-green-600">correo electrónico</span>
+      </h2>
+      <p class="text-gray-600 text-center mb-6">
+        Ingresa el código de verificación que te enviamos por correo.  
+        El enlace o código expira en 48 horas.
+      </p>
+
+      <form id="verifyForm" class="space-y-5">
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Código de verificación</label>
+          <input type="text" id="codigo" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none" placeholder="Ej: 123456" required>
+        </div>
+
+        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition">
+          Confirmar cuenta
+        </button>
+
+        <button id="reenviarBtn" type="button" class="w-full border border-green-500 text-green-600 hover:bg-green-100 py-2 rounded-lg font-semibold transition">
+          Reenviar código
+        </button>
+      </form>
+
+      <p id="mensaje" class="text-center mt-6 font-medium"></p>
+    </div>
+  </div>
+
+  <script src="verificar.js"></script>
+</body>
+</html>

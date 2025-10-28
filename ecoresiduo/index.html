@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoResiduos - Bienvenido</title>
+  <link rel="icon" type="image/png" href="/ecoresiduo/public/assets/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white shadow-xl rounded-3xl flex flex-col md:flex-row w-11/12 md:w-3/4 max-w-4xl overflow-hidden">
+    <!-- Imagen / Avatar -->
+    <div class="bg-green-200 flex justify-center items-center p-8 md:w-1/2">
+      <img src="/assets/avatar.png" alt="EcoResiduos personaje" class="w-72">
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="flex flex-col justify-center items-center text-center p-8 md:w-1/2">
+      <h1 class="text-3xl font-bold text-gray-800 mb-4">
+        ¡Bienvenido a <span class="text-green-600">EcoResiduos</span>!
+      </h1>
+      <p class="text-gray-600 mb-8">Elegí una opción para comenzar</p>
+
+      <div class="flex flex-col space-y-4 w-full max-w-xs">
+        <a href="/public/login.html" 
+           class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition">
+          Iniciar sesión
+        </a>
+        <a href="/public/register.html" 
+           class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-lg transition">
+          Registrarse
+        </a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
