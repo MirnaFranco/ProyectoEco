@@ -1,5 +1,5 @@
 // index.js
-import './style.css';
+import './src/style.css';
 
 // Seleccionamos los botones
 const loginBtn = document.getElementById('loginBtn');
@@ -9,7 +9,6 @@ const registerBtn = document.getElementById('registerBtn');
 if (loginBtn) {
   loginBtn.addEventListener('click', (e) => {
     e.preventDefault(); // Prevenir navegación por defecto temporalmente
-    console.log('Iniciando sesión...');
     window.location.href = loginBtn.href; // Redirige a login.html
   });
 }
@@ -18,7 +17,6 @@ if (loginBtn) {
 if (registerBtn) {
   registerBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    console.log('Registrándose...');
     window.location.href = registerBtn.href; // Redirige a register.html
   });
 }
@@ -28,5 +26,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const formCard = document.querySelector('.form-card');
   if (formCard) {
     formCard.classList.add('opacity-100'); // Agrega clase para transición si existe en CSS
+  }
+});
+
+// Simulación de sesión (en login.html se guarda el usuario)
+window.addEventListener('DOMContentLoaded', () => {
+  const user = JSON.parse(localStorage.getItem('sessionUser'));
+  if (user) {
+    window.location.href = './main.html';
   }
 });

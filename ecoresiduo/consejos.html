@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consejos Ecológicos - EcoResiduos</title>
+  <link rel="icon" type="image/png" href="/public/assets/favicon.png" />
+  <link rel="stylesheet" href="../style/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex flex-col min-h-screen bg-green-50 text-gray-800">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-20">
+    <div class="flex items-center space-x-3">
+      <img src="../assets/logo.png" alt="logo" class="w-8 h-8" />
+      <span class="text-2xl font-bold text-green-600">EcoResiduos</span>
+    </div>
+
+    <ul class="hidden md:flex space-x-6 font-semibold items-center">
+      <li><a href="../index.html" class="hover:text-green-900">Inicio</a></li>
+      <li><a href="Chatbot.html" class="hover:text-green-900">Chatbot</a></li>
+      <li><a href="mapa.html" class="hover:text-green-900">Mapa</a></li>
+      <li><a href="estadistica.html" class="hover:text-green-900">Estadísticas</a></li>
+      <li><a href="consejos.html" class="hover:text-green-900">Consejos</a></li>
+      <li><a href="perfil.html" class="hover:text-green-900">Perfil</a></li>
+    </ul>
+
+    <div class="flex items-center space-x-3">
+      <button id="notifyPermBtn" class="text-sm px-3 py-1 rounded-md bg-yellow-100 text-yellow-800 hidden">
+        Activar notific.
+      </button>
+      <button id="logoutBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 max-w-4xl mx-auto px-6 py-10 w-full">
+    <section id="consejos-section" class="space-y-6">
+      <h2 class="text-2xl font-semibold text-green-700 mb-4">💡 Consejos Ecológicos</h2>
+      <div id="tipContainer" class="grid md:grid-cols-2 gap-6"></div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-green-700 text-white py-8">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+      <div>
+        <h3 class="font-bold text-lg">EcoResiduos</h3>
+        <p class="text-sm text-green-100 mt-2">Plataforma dedicada a fomentar el reciclaje y la economía circular en tu comunidad.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold">Enlaces</h4>
+        <ul class="text-sm mt-2 space-y-1">
+          <li><a href="./consejos.html" class="hover:underline">Consejos</a></li>
+          <li><a href="../index.html" class="hover:underline">Inicio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold">Contacto</h4>
+        <p class="text-sm mt-2">contacto@ecoresiduos.dev</p>
+      </div>
+    </div>
+    <div class="mt-6 text-center text-green-200 text-sm">
+      © 2025 EcoResiduos. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script type="module" src="../js/consejos.js"></script>
+  <script src="./src/logout.js"></script>
+</body>
+</html>

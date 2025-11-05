@@ -100,6 +100,14 @@ EVENTOS.forEach(ev => {
 renderContenedores();
 filtro.addEventListener("change", renderContenedores);
 
+/* --- LOGOUT --- */
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("ecoresiduos_user");
+  localStorage.removeItem("ecoresiduos_state_v1");
+  window.location.href = "/ecoresiduo/public/login.html";
+});
+
+
 // =======================
 // Geolocalización y cálculo de distancia
 // =======================

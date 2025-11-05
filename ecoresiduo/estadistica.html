@@ -3,30 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoResiduos - Mapa</title>
+  <title>Estadísticas - EcoResiduos</title>
   <link rel="icon" type="image/png" href="/public/assets/favicon.png" />
-  
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-sA+4g3N5m1UyxJkGux1x88g0fWgA7kJ+1LZ9r94qA4s="
-    crossorigin=""
-  />
-
-  <style>
-    #map { height: 100vh; width: 100%; }
-  </style>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body class="flex flex-col min-h-screen bg-green-50 text-gray-800">
 
   <!-- NAVBAR -->
   <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-20">
     <div class="flex items-center space-x-3">
-      <img src="/assets/logo.png" alt="logo" class="w-8 h-8">
+      <img src="../assets/logo.png" alt="logo" class="w-8 h-8">
       <span class="text-2xl font-bold text-green-600">EcoResiduos</span>
     </div>
 
@@ -39,7 +25,7 @@
       <li><a href="perfil.html" class="hover:text-green-900">Perfil</a></li>
     </ul>
 
-    <div class="flex items-center space-x-3">
+<div class="flex items-center space-x-3">
       <button id="notifyPermBtn" class="text-sm px-3 py-1 rounded-md bg-yellow-100 text-yellow-800 hidden">
         Activar notific.
       </button>
@@ -47,46 +33,26 @@
         Cerrar sesión
       </button>
     </div>
+
   </nav>
 
   <!-- MAIN CONTENT -->
-  <main class="flex flex-1">
-    <!-- SIDEBAR -->
-    <aside class="w-96 bg-white border-r p-4 flex flex-col gap-4">
-      <h2 class="text-xl font-bold">EcoResiduos — Contenedores</h2>
+  <main class="flex-1 max-w-6xl mx-auto px-6 py-10 w-full">
+    <section id="resumen" class="mb-8 bg-white p-6 rounded-2xl shadow-md">
+      <h2 class="text-2xl font-semibold text-green-700 mb-3">📊 Tu Impacto Ambiental</h2>
+      <p id="kilosReciclados">Cargando kilos reciclados...</p>
+      <p id="co2Evitado">Cargando CO₂ evitado...</p>
+      <p id="points">Cargando puntos...</p>
+      <p id="level">Cargando nivel...</p>
+    </section>
 
-      <div class="flex gap-2">
-        <select id="filtro" class="border rounded px-2 py-1 flex-1">
-          <option>Todos</option>
-          <option>Plástico</option>
-          <option>Vidrio</option>
-          <option>Papel</option>
-          <option>Cartón</option>
-        </select>
-        <button id="btnUbicacion" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-          Mi ubicación
-        </button>
+    <section id="logros" class="bg-white p-6 rounded-2xl shadow-md">
+      <h2 class="text-2xl font-semibold text-green-700 mb-3">🏆 Logros Ecológicos</h2>
+      <div id="medalla" class="medalla mb-4"></div>
+      <div id="achievementsList" class="space-y-2">
+        <!-- Logros desbloqueados se muestran aquí -->
       </div>
-
-      <button id="btnCercano" class="px-3 py-1 border rounded">
-        Buscar contenedor más cercano
-      </button>
-
-      <div id="infoCercano" class="hidden p-2 bg-green-50 border rounded text-sm"></div>
-
-      <div class="flex-1 overflow-auto">
-        <h3 class="font-semibold mt-2 mb-1">Lista de contenedores</h3>
-        <ul id="listaContenedores" class="space-y-2"></ul>
-
-        <h3 class="font-semibold mt-4 mb-1">Eventos próximos</h3>
-        <ul id="listaEventos" class="space-y-2"></ul>
-      </div>
-    </aside>
-
-    <!-- MAP -->
-    <div class="flex-1">
-      <div id="map"></div>
-    </div>
+    </section>
   </main>
 
   <!-- FOOTER -->
@@ -100,9 +66,9 @@
       <div>
         <h4 class="font-semibold">Enlaces</h4>
         <ul class="text-sm mt-2 space-y-1">
-          <li><a href="./mapa.html" class="hover:underline">Mapa</a></li>
-          <li><a href="./estadistica.html" class="hover:underline">Estadísticas</a></li>
-          <li><a href="/ecoresiduo/public/chatbot.html" class="hover:underline">Chatbot</a></li>
+          <li><a href="mapa.html" class="hover:underline">Mapa</a></li>
+          <li><a href="main.html" class="hover:underline">Inicio</a></li>
+          <li><a href="Chatbot.html" class="hover:underline">Chatbot</a></li>
         </ul>
       </div>
 
@@ -114,19 +80,27 @@
         </div>
       </div>
     </div>
-
     <div class="mt-6 text-center text-green-200 text-sm">© 2025 EcoResiduos. Todos los derechos reservados.</div>
   </footer>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-o9N1jJQG+MfFQYziM1z7A1w9a8g3o9Qus0B0zXz1Hyg="
-    crossorigin=""
-  ></script>
+  <script type="module" src="./src/estadistica.js"></script>
+  <script type="module">
+  import { logoutUser } from "/src/logout.js";
 
-  <!-- Script principal -->
-  <script src="./mapa.js"></script>
-  <script src="./src/logout.js"></script>
+  // Esperar a que el DOM esté listo
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const confirmar = confirm("¿Seguro que deseas cerrar sesión?");
+        if (confirmar) logoutUser();
+      });
+    } else {
+      console.error("❌ No se encontró el botón #logoutBtn en el HTML.");
+    }
+  });
+</script>
 </body>
 </html>
