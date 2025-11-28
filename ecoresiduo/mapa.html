@@ -4,18 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoResiduos - Mapa</title>
-  <link rel="icon" type="image/png" href="/public/assets/favicon.png" />
-  
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
 
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-sA+4g3N5m1UyxJkGux1x88g0fWgA7kJ+1LZ9r94qA4s="
-    crossorigin=""
-  />
+  <!-- Leaflet CSS (sin integrity para desarrollo) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  
 
   <style>
     #map { height: 100vh; width: 100%; }
@@ -40,9 +34,6 @@
     </ul>
 
     <div class="flex items-center space-x-3">
-      <button id="notifyPermBtn" class="text-sm px-3 py-1 rounded-md bg-yellow-100 text-yellow-800 hidden">
-        Activar notific.
-      </button>
       <button id="logoutBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
         Cerrar sesión
       </button>
@@ -96,37 +87,28 @@
         <h3 class="font-bold text-lg">EcoResiduos</h3>
         <p class="text-sm text-green-100 mt-2">Plataforma dedicada a fomentar el reciclaje y la economía circular en tu comunidad.</p>
       </div>
-
       <div>
         <h4 class="font-semibold">Enlaces</h4>
         <ul class="text-sm mt-2 space-y-1">
           <li><a href="./mapa.html" class="hover:underline">Mapa</a></li>
           <li><a href="./estadistica.html" class="hover:underline">Estadísticas</a></li>
-          <li><a href="/ecoresiduo/public/chatbot.html" class="hover:underline">Chatbot</a></li>
+          <li><a href="./Chatbot.html" class="hover:underline">Chatbot</a></li>
         </ul>
       </div>
-
       <div>
         <h4 class="font-semibold">Contacto</h4>
         <p class="text-sm mt-2">contacto@ecoresiduos.dev</p>
-        <div class="flex gap-3 mt-3">
-          <a href="#" class="text-green-100 hover:text-white">Facebook</a>
-        </div>
       </div>
     </div>
-
     <div class="mt-6 text-center text-green-200 text-sm">© 2025 EcoResiduos. Todos los derechos reservados.</div>
   </footer>
 
   <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-o9N1jJQG+MfFQYziM1z7A1w9a8g3o9Qus0B0zXz1Hyg="
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Script principal -->
-  <script src="./mapa.js"></script>
-  <script src="./src/logout.js"></script>
+  <script type="module" src="./src/mapa.js"></script>
+  <script type="module" src="./src/logout.js"></script>
 </body>
 </html>
+

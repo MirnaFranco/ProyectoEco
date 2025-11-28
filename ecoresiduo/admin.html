@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+
+  <!-- Tailwind -->
+  <link rel="stylesheet" href="src/style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <h1 id="welcomeAdmin" class="text-xl font-bold">Bienvenido, Admin</h1>
+
+    <!-- Navegación -->
+    <nav class="space-x-4 flex items-center">
+      <a href="dashboard.html" class="hover:underline">Dashboard</a>
+      <a href="admin-events.html" class="hover:underline">Eventos</a>
+      <a href="#ecopuntosSection" class="hover:underline">Ecopuntos</a>
+      <a href="rutas.html" class="hover:underline">Rutas</a>
+      <a href="#usuariosSection" class="hover:underline">Usuarios</a>
+
+      <button id="logoutBtn" 
+              class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded ml-4">
+        Cerrar sesión
+      </button>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="p-6 space-y-10">
+
+    <!-- Error global -->
+    <div id="mensajeError"
+         class="hidden mb-4 p-2 bg-red-200 text-red-800 rounded">
+    </div>
+
+    <!-- DASHBOARD -->
+    <section id="dashboardSection">
+      <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+
+      <!-- Tarjetas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+
+        <div class="bg-white p-4 rounded shadow">
+          <p class="text-gray-500">Usuarios Totales</p>
+          <p id="usuariosTotal" class="text-2xl font-bold">0</p>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow">
+          <p class="text-gray-500">Kg Reciclados Total</p>
+          <p id="kgRecicladosTotal" class="text-2xl font-bold">0</p>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow">
+          <p class="text-gray-500">Ecopuntos Activos</p>
+          <p id="totalContenedores" class="text-2xl font-bold">0</p>
+        </div>
+
+      </div>
+
+      <!-- Gráficos -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-bold mb-2">Usuarios Registrados</h3>
+          <canvas id="usuariosChart" height="120"></canvas>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-bold mb-2">Kg Reciclados</h3>
+          <canvas id="reciclajeChart" height="120"></canvas>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow md:col-span-2">
+          <h3 class="font-bold mb-2">Tendencia Mensual</h3>
+          <canvas id="tendenciaChart" height="150"></canvas>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- EVENTOS -->
+    <section id="eventosSection">
+      <h2 class="text-2xl font-bold mb-4">Eventos</h2>
+
+      <div class="bg-white p-4 rounded shadow">
+        <p>Listado de eventos del sistema aquí.</p>
+      </div>
+    </section>
+
+    <!-- ECOPUNTOS -->
+    <section id="ecopuntosSection">
+      <h2 class="text-2xl font-bold mb-4">Ecopuntos</h2>
+
+      <div class="bg-white p-4 rounded shadow overflow-x-auto">
+        <table class="w-full table-auto">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="border px-4 py-2">ID</th>
+              <th class="border px-4 py-2">Dirección</th>
+              <th class="border px-4 py-2">Tipo</th>
+              <th class="border px-4 py-2">Capacidad</th>
+              <th class="border px-4 py-2">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody id="ecopuntosTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- RUTAS -->
+    <section id="rutasSection">
+      <h2 class="text-2xl font-bold mb-4">Rutas del Camión</h2>
+
+      <div class="bg-white p-4 rounded shadow overflow-x-auto">
+        <table class="w-full table-auto">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="border px-4 py-2">ID Camión</th>
+              <th class="border px-4 py-2">Zona</th>
+              <th class="border px-4 py-2">Estado</th>
+              <th class="border px-4 py-2">Última actualización</th>
+            </tr>
+          </thead>
+
+          <tbody id="rutasTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- USUARIOS -->
+    <section id="usuariosSection">
+      <h2 class="text-2xl font-bold mb-4">Usuarios</h2>
+
+      <div class="bg-white p-4 rounded shadow overflow-x-auto">
+        <table class="w-full table-auto">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="border px-4 py-2">ID</th>
+              <th class="border px-4 py-2">Nombre</th>
+              <th class="border px-4 py-2">Email</th>
+              <th class="border px-4 py-2">Rol</th>
+              <th class="border px-4 py-2">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody id="userTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script -->
+  <script type="module" src="src/adminDashboard.js"></script>
+
+</body>
+</html>

@@ -1,4 +1,5 @@
 // js/consejos.js
+import './style.css';
 
 const consejos = [
   "♻️ Separa tus residuos correctamente: orgánicos e inorgánicos.",
@@ -77,6 +78,5 @@ renderTips();
 
 // Logout simulación
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  alert("Sesión cerrada. Redirigiendo a login...");
   window.location.href = "../login.html";
 });

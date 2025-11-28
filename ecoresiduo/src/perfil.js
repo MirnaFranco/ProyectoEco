@@ -1,3 +1,5 @@
+import './style.css';
+
 export function loadProfile(container) {
   let usuario = {
     avatar: "../assets/logo.png",

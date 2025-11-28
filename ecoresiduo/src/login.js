@@ -1,49 +1,67 @@
- import './style.css';
 
+// 🔹 Capturar el submit del formulario
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
+  // 🔹 Validar campos
   if (!email || !password) {
-    alert("Por favor, completá todos los campos.");
+    mostrarError("Completa todos los campos.");
     return;
   }
 
   try {
-    const response = await fetch("http://localhost:3000/usuarios/login", {
+    // 🔹 Enviar petición al backend
+    const res = await fetch("http://localhost:3000/usuarios/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      credentials: "include",
+      credentials: "include", // IMPORTANTE: para sesión JWT/cookies
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
     });
 
-    const data = await response.json();
+    const data = await res.json();
+    console.log("RESPUESTA LOGIN:", data);
 
-    if (!response.ok) {
-      alert(data.message || "Error en el inicio de sesión.");
+    if (!data.ok) {
+      mostrarError(data.mensaje || "Credenciales incorrectas.");
       return;
     }
 
-    // ✅ Guardamos los datos del usuario en localStorage
-    const userData = {
-      name: data.user?.name || data.user?.email || "Usuario",
-      email: data.user?.email,
-      avatar: data.user?.avatar || "/ecoresiduo/public/assets/default-avatar.png",
-      token: data.token,
-      loggedIn: true,
-    };
+    // 🔹 Obtener rol (role o rol)
+    const role = data.role || data.rol;
 
-    localStorage.setItem("ecoresiduos_user", JSON.stringify(userData));
-
-    alert("Inicio de sesión exitoso. ¡Bienvenido a EcoResiduos! 🌱");
-
-    // ✅ Redirigimos al panel principal
-    window.location.href = "/main.html";
+    // 🔹 Redirección según rol
+    switch (role) {
+      case "administrador":
+        window.location.href = "/admin.html";
+        break;
+      case "operador":
+        window.location.href = "/repartidor/main.html";
+        break;
+      case "usuario":
+        window.location.href = "/main.html";
+        break;
+      default:
+        mostrarError("Rol no reconocido: " + role);
+        break;
+    }
 
   } catch (error) {
-    console.error("Error de conexión:", error);
-    alert("Error al conectar con el servidor. Verificá que el backend esté en ejecución.");
+    console.error(error);
+    mostrarError("Error de conexión con el servidor.");
   }
 });
+
+// 🔹 Función para mostrar errores
+function mostrarError(msg) {
+  const box = document.getElementById("mensajeError");
+  box.textContent = msg;
+  box.classList.remove("hidden");
+
+  // Opcional: ocultar error después de 5 segundos
+  setTimeout(() => box.classList.add("hidden"), 5000);
+}

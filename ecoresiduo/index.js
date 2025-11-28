@@ -1,6 +1,7 @@
 // index.js
 import './src/style.css';
 
+
 // Seleccionamos los botones
 const loginBtn = document.getElementById('loginBtn');
 const registerBtn = document.getElementById('registerBtn');
@@ -36,3 +37,4 @@ window.addEventListener('DOMContentLoaded', () => {
     window.location.href = './main.html';
   }
 });
+

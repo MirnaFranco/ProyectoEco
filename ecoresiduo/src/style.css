@@ -1,63 +1,212 @@
-/* Importaciones actualizadas Tailwind v4 */
+/* IMPORTACIONES TAILWIND v4 */
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 @import "tailwindcss/theme";
 
-/* Fuente y colores base */
+/* ============================================
+   BASE DEL SITIO
+============================================ */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f0f4f8;
+  background: #f3f4f6;
+  transition: background 0.3s ease;
 }
 
-/* Tarjetas de consejos */
+/* MODO OSCURO GENERAL */
+.dark body {
+  background-color: #0f172a !important; /* slate-900 */
+  color: #f8fafc !important;           /* slate-50 */
+}
+
+/* NAVBAR */
+.dark nav {
+  background-color: rgba(17, 24, 39, 0.9) !important;
+}
+
+/* ============================================
+   TARJETAS (TIP CARDS + ADMIN CARDS)
+============================================ */
+.card,
 .tip-card {
-  background: #f0fdf4;
+  background: #ffffff;
   border-radius: 12px;
   padding: 1.5rem;
-  transition: transform 0.3s ease;
-}
-.tip-card:hover {
-  transform: scale(1.02);
+  transition: transform .3s ease, background-color .3s ease, box-shadow .25s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
 }
 
-/* Animaciones */
+.card:hover,
+.tip-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+
+/* TIP CARD VERDE */
+.tip-card {
+  background: #f0fdf4;
+}
+
+/* TARJETAS en DARK */
+.dark .card,
+.dark .tip-card {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* ============================================
+   BOTONES
+============================================ */
+.btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s ease, transform .1s ease, box-shadow .2s ease;
+  border: none;
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+.btn:active {
+  transform: scale(.97);
+}
+
+/* COLORES */
+.btn-primary { background: #2563eb; }
+.btn-primary:hover { background: #1d4ed8; }
+
+.btn-warning { background: #f59e0b; }
+.btn-warning:hover { background: #d97706; }
+
+.btn-danger { background: #dc2626; }
+.btn-danger:hover { background: #b91c1c; }
+
+.btn-neutral {
+  background: #e5e7eb;
+  color: #111827;
+}
+.btn-neutral:hover { background: #d1d5db; }
+
+/* BOTONES en DARK */
+.dark .btn {
+  opacity: 0.95;
+}
+
+/* ============================================
+   FORMULARIOS
+============================================ */
+input,
+select,
+textarea {
+  border: 1px solid #d1d5db;
+  padding: .55rem .75rem;
+  border-radius: 8px;
+  width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .25);
+  outline: none;
+}
+
+/* INPUTS EN DARK */
+.dark input,
+.dark select,
+.dark textarea {
+  background: #1e293b !important;
+  color: white !important;
+  border-color: #334155 !important;
+}
+
+/* ============================================
+   TABLAS
+============================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #e5e7eb;
+  padding: 0.9rem .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: .85rem;
+}
+
+td {
+  padding: 0.9rem .75rem;
+}
+
+tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+tr:hover {
+  background: #f9fafb;
+}
+
+/* DARK TABLE */
+.dark th {
+  background: #1e293b;
+}
+
+.dark tr {
+  border-color: #334155;
+}
+
+.dark tr:hover {
+  background: #0f172a;
+}
+
+/* ============================================
+   ANIMACIONES
+============================================ */
 .fade-enter {
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.3s ease;
+  transition: all .3s ease;
 }
+
 .fade-enter-active {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Estrellas de favoritos */
+/* FORM APPEAR */
+#formContainer {
+  animation: fadeIn .25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   FAVORITOS
+============================================ */
 .favorite {
   cursor: pointer;
   font-size: 1.3rem;
   color: #f59e0b;
 }
 
-/* Botones personalizados */
-.btn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-.btn:hover {
-  background-color: #3b8c40;
+.dark .favorite {
+  color: #fbbf24;
 }
 
-/* Toast de logro */
-.toast {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Progreso */
+/* ============================================
+   PROGRESO
+============================================ */
 .progress-bar {
   background: #ddd;
   height: 20px;
@@ -65,76 +214,99 @@ body {
   overflow: hidden;
   margin: 10px 0;
 }
+
 .progress {
   height: 100%;
   background: #4caf50;
-  transition: width 0.5s ease;
+  transition: width .5s ease;
 }
 
-/* Logros */
+/* DARK PROGRESS */
+.dark .progress-bar { background: #334155 !important; }
+.dark .progress { background: #22c55e !important; }
+
+/* ============================================
+   MEDALLAS
+============================================ */
 .medal-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 15px;
-  margin-top: 15px;
+  justify-content: center;
 }
+
 .medal {
-  background: #fff;
-  border: 2px solid #4caf50;
-  border-radius: 50%;
   width: 60px;
   height: 60px;
+  border: 2px solid #4caf50;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
-  animation: popIn 0.5s ease;
+  background: #fff;
+  animation: popIn .5s ease;
 }
 
 @keyframes popIn {
   from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
-/* Modal */
+/* MEDALLAS DARK */
+.dark .medal {
+  background: #1e293b !important;
+  border-color: #22c55e !important;
+  color: #f8fafc;
+}
+
+/* ============================================
+   MODAL
+============================================ */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,.5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .modal.hidden {
   display: none;
 }
+
 .modal-content {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  width: 300px;
+  width: 330px;
   text-align: center;
-  animation: fadeIn 0.4s ease;
+  animation: fadeIn .4s ease;
 }
 
-/* Input */
-input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* DARK MODAL */
+.dark .modal-content {
+  background: #1e293b !important;
+  color: #f8fafc !important;
 }
 
-/* Animación fadeIn */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ============================================
+   CATEGORÍAS — FIX
+============================================ */
+.dark #categoriesContainer > div {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark #categoriesContainer i { color: #4ade80 !important; }
+.dark #categoriesContainer p { color: #cbd5e1 !important; }
+.dark #categoriesContainer h3 { color: #f8fafc !important; }
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width: 768px) {
+  td, th { font-size: .85rem; }
+  .card { padding: 1.2rem; }
 }

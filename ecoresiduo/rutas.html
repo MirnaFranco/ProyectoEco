@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Entrega</title>
+  <link rel="stylesheet" href="src/style.css">
+  <script>
+    tailwind.config = { darkMode: 'class' };
+    function toggleDark() {
+      document.documentElement.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.documentElement.classList.contains("dark"));
+    }
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.documentElement.classList.add("dark");
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">♻ Registrar Entrega</h1>
+    <button onclick="toggleDark()" 
+      class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+      🌗 Modo
+    </button>
+
+    <!-- Logout -->
+      <button
+        onclick="logout()"
+        class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white"
+      >
+        Cerrar sesión
+      </button>
+    
+
+  </nav>
+
+
+  <main class="max-w-2xl mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+      Nueva Entrega de Material
+    </h2>
+
+    <form id="formEntrega" class="space-y-4">
+
+      <!-- Material con autocompletado -->
+      <div>
+        <label class="block text-gray-700 dark:text-gray-300 mb-1">Material</label>
+        <input id="materialNombre" type="text" placeholder="Seleccione o escriba material"
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          list="listaMateriales" autocomplete="off" required />
+        <datalist id="listaMateriales">
+          <option value="Plásticos">
+          <option value="Vidrio">
+          <option value="Metales">
+          <option value="Residuos peligrosos">
+          <option value="Orgánicos">
+          <option value="Papel y Cartón">
+        </datalist>
+      </div>
+
+      <!-- Peso -->
+      <div>
+        <label class="block text-gray-700 dark:text-gray-300 mb-1">Peso (kg)</label>
+        <input type="number" id="pesoKg" step="0.01"
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
+          placeholder="Ej: 2.5" required>
+      </div>
+
+      <!-- Contenedor -->
+      <div>
+        <label class="block text-gray-700 dark:text-gray-300 mb-1">ID Contenedor</label>
+        <input type="number" id="idContenedor"
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
+          placeholder="Opcional">
+      </div>
+
+      <!-- Mensajes -->
+      <div id="msg" class="text-center mt-3"></div>
+
+      <!-- Botón -->
+      <button id="btnEnviar" type="submit" 
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold">
+        Registrar Entrega
+      </button>
+    </form>
+  </main>
+
+  <script src="./src/rutas.js"></script>
+</body>
+</html>

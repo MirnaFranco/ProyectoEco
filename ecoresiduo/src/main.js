@@ -1,233 +1,157 @@
-import './style.css';
-/* main.js - EcoResiduos */
+// src/main.js
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("⏳ Verificando sesión...");
 
-/* --- CONFIGURACIÓN --- */
-const KILO_TO_POINT = 10;   // 1kg = 10 puntos
-const CO2_PER_KG = 0.2;     // estimación kg CO2 evitado por kg reciclado
+  try {
+    const res = await fetch("http://localhost:3000/usuarios/session", {
+      credentials: "include",
+    });
 
-/* --- DOM ELEMENTS --- */
-const kilosValue = document.getElementById("kilosValue");
-const pointsValue = document.getElementById("pointsValue");
-const co2Value = document.getElementById("co2Value");
-const historyList = document.getElementById("historyList");
-const achievementsList = document.getElementById("achievementsList");
-const achievementsPreview = document.getElementById("achievementsPreview");
-const levelBadge = document.getElementById("levelBadge");
-const avatarImg = document.getElementById("avatarImg");
-const userNameEl = document.getElementById("userName");
+    const data = await res.json();
+    console.log("SESSION RESPONSE:", data);
 
-const kilosInput = document.getElementById("kilosInput");
-const materialSelect = document.getElementById("materialSelect");
-const registerKilosBtn = document.getElementById("registerKilosBtn");
-const remindBtn = document.getElementById("remindBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const notifyPermBtn = document.getElementById("notifyPermBtn");
+    if (!data.ok) {
+      console.log("🔴 Sin sesión → Redirigiendo...");
+      window.location.href = "/usuarios/login.html";
+      return;
+    }
 
-/* --- SESIÓN --- */
-const user = JSON.parse(localStorage.getItem("ecoresiduos_user"));
-if (!user || !user.loggedIn) {
-  window.location.href = "/ecoresiduo/public/login.html";
-}
+    console.log("🟢 Sesión válida:", data.user);
 
-/* --- ESTADO --- */
-const defaultState = {
-  kilos: 0,
-  points: 0,
-  history: [],
-  achievements: [],
-  lastReminder: null
-};
-
-let state = loadState();
-
-/* --- INICIALIZACIÓN --- */
-updateUI();
-initMap();
-renderUserPanel();
-requestNotificationPermissionIfNeeded();
-
-/* --- FUNCIONES DE ESTADO --- */
-function loadState() {
-  const raw = localStorage.getItem("ecoresiduos_state_v1");
-  if (!raw) return { ...defaultState };
-  try { return { ...defaultState, ...JSON.parse(raw) }; }
-  catch(e) { return { ...defaultState }; }
-}
-
-function saveState() {
-  localStorage.setItem("ecoresiduos_state_v1", JSON.stringify(state));
-}
-
-/* --- UI --- */
-function updateUI() {
-  kilosValue.textContent = `${state.kilos.toFixed(1)} kg`;
-  pointsValue.textContent = state.points;
-  co2Value.textContent = `${(state.kilos * CO2_PER_KG).toFixed(2)} kg CO₂`;
-
-  // Historial
-  historyList.innerHTML = "";
-  state.history.slice().reverse().forEach(item => {
-    const d = document.createElement("div");
-    d.className = "bg-gray-50 p-3 rounded";
-    d.innerHTML = `<div class="text-sm"><strong>${item.kilos} kg</strong> — ${item.material} <span class="text-xs text-gray-500">(${new Date(item.date).toLocaleString()})</span></div>`;
-    historyList.appendChild(d);
-  });
-
-  // Logros
-  achievementsList.innerHTML = "";
-  state.achievements.forEach(a => {
-    const li = document.createElement("li");
-    li.textContent = `${a.title} — ${new Date(a.date).toLocaleDateString()}`;
-    achievementsList.appendChild(li);
-  });
-
-  // Preview logros
-  achievementsPreview.innerHTML = state.achievements.slice(-3).map(a => `<div>🏅 ${a.title}</div>`).join("");
-
-  // Nivel
-  levelBadge.textContent = getLevelName(state.points);
-}
-
-/* --- PANEL USUARIO --- */
-function renderUserPanel() {
-  avatarImg.src = user.avatar || "/ecoresiduo/public/assets/default-avatar.png";
-  userNameEl.textContent = user.name || "Usuario";
-}
-
-/* --- NIVELES --- */
-function getLevelName(points) {
-  if (points >= 500) return "Experto ♻️";
-  if (points >= 200) return "Avanzado 🌿";
-  if (points >= 80) return "Intermedio 🌱";
-  return "Novato ♻️";
-}
-
-/* --- REGISTRO DE KILOS --- */
-registerKilosBtn.addEventListener("click", () => {
-  const kilos = parseFloat(kilosInput.value);
-  const material = materialSelect.value;
-  doRegister(kilos, material);
+  } catch (err) {
+    console.error("ERROR FETCH SESSION:", err);
+    window.location.href = "/usuarios/login.html";
+  }
 });
 
-function doRegister(kilos, material) {
-  if (!kilos || kilos <= 0) {
-    showToast("Ingresa una cantidad válida de kilos.");
+
+
+import "./style.css";
+import { createIcons, icons } from "lucide";
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // --------------------------------------------------------------------
+  // 🔥 VERIFICAR SESIÓN SOLO CON LA COOKIE JWT
+  // --------------------------------------------------------------------
+  try {
+    const res = await fetch("http://localhost:3000/usuarios/session", {
+      credentials: "include",  // ENVÍA LA COOKIE
+    });
+
+    const data = await res.json();
+    console.log("SESSION:", data);
+
+    if (!data.ok) {
+      // No hay sesión válida → volver al login
+      window.location.href = "/usuarios/login.html";
+      return;
+    }
+
+    // Usuario autenticado
+    const user = data.user;
+
+    // Mostrar datos del usuario
+    const nameEl = document.getElementById("userName");
+    const avatarEl = document.getElementById("userAvatar");
+    const emailEl = document.getElementById("userEmail");
+
+    if (nameEl) nameEl.textContent = user.nombre || "Usuario";
+    if (emailEl) emailEl.textContent = user.email || "";
+    if (avatarEl) avatarEl.src = "/public/assets/default-avatar.png";
+
+  } catch (err) {
+    console.error("Error verificando sesión:", err);
+    window.location.href = "/usuarios/login.html";
     return;
   }
 
-  state.kilos = +(state.kilos + kilos).toFixed(1);
-  const puntosGanados = Math.round(kilos * KILO_TO_POINT);
-  state.points += puntosGanados;
-
-  state.history.push({ kilos, material, date: new Date().toISOString() });
-
-  checkAchievements();
-  saveState();
-  updateUI();
-
-  showToast(`Registrados ${kilos} kg. +${puntosGanados} puntos`);
-  showNotification("¡Buen trabajo! ✅", `Has reciclado ${kilos} kg — ganaste ${puntosGanados} puntos.`);
-  kilosInput.value = "";
-}
-
-/* --- LOGROS --- */
-const ACHIEVEMENT_RULES = [
-  { id: "bronze_5", kilos: 5, title: "Bronce: 5 kg reciclados" },
-  { id: "silver_20", kilos: 20, title: "Plata: 20 kg reciclados" },
-  { id: "gold_50", kilos: 50, title: "Oro: 50 kg reciclados" },
-  { id: "conciencia_100", kilos: 100, title: "Conciencia: 100 kg reciclados" },
-];
-
-function checkAchievements() {
-  for (const rule of ACHIEVEMENT_RULES) {
-    if (state.kilos >= rule.kilos && !state.achievements.some(a => a.id === rule.id)) {
-      const ach = { id: rule.id, title: rule.title, date: new Date().toISOString() };
-      state.achievements.push(ach);
-      showToast(`¡Logro desbloqueado! ${rule.title}`);
-      showNotification("🎉 Logro desbloqueado", rule.title);
-    }
-  }
-}
-
-/* --- NOTIFICACIONES --- */
-function requestNotificationPermissionIfNeeded() {
-  if (!("Notification" in window)) return;
-  if (Notification.permission === "default") {
-    notifyPermBtn.classList.remove("hidden");
-    notifyPermBtn.addEventListener("click", () => {
-      Notification.requestPermission().then(perm => {
-        if (perm === "granted") showToast("Notificaciones habilitadas");
-        else showToast("Notificaciones no habilitadas");
-        notifyPermBtn.classList.add("hidden");
+  // --------------------------------------------------------------------
+  // LOGOUT SOLO BORRA LA COOKIE EN EL SERVIDOR
+  // --------------------------------------------------------------------
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      await fetch("http://localhost:3000/usuarios/logout", {
+        method: "POST",
+        credentials: "include",
       });
+
+      window.location.href = "/usuarios/login.html";
     });
-  } else if (Notification.permission === "granted") {
-    notifyPermBtn.classList.add("hidden");
   }
-}
 
-function showNotification(title, body) {
-  if (!("Notification" in window)) return;
-  if (Notification.permission === "granted") new Notification(title, { body });
-}
-
-/* --- TOAST --- */
-function showToast(text, timeout = 3500) {
-  const t = document.createElement("div");
-  t.className = "toast toast-enter fixed right-6 bottom-6 bg-white border p-3 rounded-lg shadow-md text-sm";
-  t.textContent = text;
-  document.body.appendChild(t);
-  requestAnimationFrame(() => t.classList.remove("toast-enter"));
-  setTimeout(() => {
-    t.style.opacity = "0";
-    t.style.transform = "translateY(8px)";
-    setTimeout(() => t.remove(), 400);
-  }, timeout);
-}
-
-/* --- RECORDATORIOS --- */
-remindBtn.addEventListener("click", () => {
-  state.lastReminder = new Date().toISOString();
-  saveState();
-  showToast("Recordatorio programado para 24 horas (simulado).");
-  showNotification("Recordatorio EcoResiduos", "No olvides reciclar esta semana ♻️");
-});
-
-/* --- LOGOUT --- */
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("ecoresiduos_user");
-  localStorage.removeItem("ecoresiduos_state_v1");
-  window.location.href = "/ecoresiduo/public/login.html";
-});
-
-/* --- MAPA LEAFLET --- */
-function initMap() {
+  // --------------------------------------------------------------------
+  // ICONOS
+  // --------------------------------------------------------------------
   try {
-    const map = L.map("map").setView([-31.6, -60.7], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: "&copy; OpenStreetMap contributors",
-    }).addTo(map);
-
-    const centers = [
-      { name: "Punto Verde Centro", lat: -31.599, lng: -60.703, info: "Plástico, vidrio, papel" },
-      { name: "Centro Reciclaje Norte", lat: -31.589, lng: -60.710, info: "Metal, plástico" },
-      { name: "EcoPunto Sur", lat: -31.607, lng: -60.690, info: "Orgánicos y compost" },
-    ];
-
-    centers.forEach(c => {
-      const marker = L.marker([c.lat, c.lng]).addTo(map);
-      marker.bindPopup(`<strong>${c.name}</strong><br>${c.info}<br><button class="open-route" data-lat="${c.lat}" data-lng="${c.lng}">Cómo llegar</button>`);
-      marker.on("popupopen", () => {
-        setTimeout(() => {
-          const btn = document.querySelector(".open-route[data-lat]");
-          if (btn) btn.addEventListener("click", () => {
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}`, "_blank");
-          });
-        }, 200);
-      });
-    });
-  } catch(e) {
-    console.error("Error inicializando mapa:", e);
+    createIcons({ icons });
+  } catch (err) {
+    console.error("❌ Error inicializando Lucide:", err);
   }
-}
+
+  // --------------------------------------------------------------------
+  // MODO OSCURO
+  // --------------------------------------------------------------------
+  const applyTheme = (theme) => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.body.classList.remove("dark");
+    }
+  };
+
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme) applyTheme(savedTheme);
+
+  const toggleBtn = document.getElementById("toggleDark");
+
+  function setToggleIcon(isDark) {
+    const iconEl = toggleBtn.querySelector("[data-lucide]");
+    iconEl.setAttribute("data-lucide", isDark ? "sun" : "moon");
+    createIcons({ icons });
+  }
+
+  setToggleIcon(document.documentElement.classList.contains("dark"));
+
+  toggleBtn.addEventListener("click", () => {
+    const isDarkNow = document.documentElement.classList.toggle("dark");
+    if (isDarkNow) document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
+
+    localStorage.setItem("theme", isDarkNow ? "dark" : "light");
+    setToggleIcon(isDarkNow);
+  });
+
+  // --------------------------------------------------------------------
+  // TARJETAS DE CATEGORÍAS
+  // --------------------------------------------------------------------
+  const categories = [
+    { name: "Orgánicos", description: "Restos de comida, cáscaras, yerba mate, residuos biodegradables.", icon: "apple" },
+    { name: "Plásticos", description: "Botellas, envases, tapitas, envoltorios limpios.", icon: "recycle" },
+    { name: "Vidrio", description: "Botellas de vidrio, frascos, envases sin tapa.", icon: "wine" },
+    { name: "Papel y Cartón", description: "Hojas, cajas limpias, cuadernos, diarios.", icon: "file-text" },
+    { name: "Metales", description: "Latas, aluminio, envases metálicos.", icon: "package" },
+    { name: "Residuos peligrosos", description: "Pilas, electrónicos, aceites, medicamentos.", icon: "alert-triangle" }
+  ];
+
+  const container = document.getElementById("categoriesContainer");
+  container.innerHTML = "";
+
+  categories.forEach(cat => {
+    const card = document.createElement("div");
+    card.className =
+      "p-6 bg-white dark:bg-gray-800 shadow rounded-2xl hover:shadow-xl transition border border-gray-200 dark:border-gray-700";
+
+    card.innerHTML = `
+      <i data-lucide="${cat.icon}" class="w-10 h-10 mb-4 text-green-600 dark:text-green-400"></i>
+      <h3 class="text-xl font-bold mb-2">${cat.name}</h3>
+      <p class="text-gray-600 dark:text-gray-300">${cat.description}</p>
+    `;
+    container.appendChild(card);
+  });
+
+  createIcons({ icons });
+});
