@@ -3,19 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Registrar Entrega</title>
+
+  <!-- Tailwind ya compilado -->
   <link rel="stylesheet" href="src/style.css">
-  <script>
-    tailwind.config = { darkMode: 'class' };
-    function toggleDark() {
-      document.documentElement.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.documentElement.classList.contains("dark"));
-    }
-    window.onload = () => {
-      if (localStorage.getItem("darkMode") === "true") {
-        document.documentElement.classList.add("dark");
-      }
-    };
-  </script>
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -23,22 +13,21 @@
   <!-- NAVBAR -->
   <nav class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
     <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">♻ Registrar Entrega</h1>
-    <button onclick="toggleDark()" 
-      class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
-      🌗 Modo
-    </button>
 
-    <!-- Logout -->
-      <button
-        onclick="logout()"
-        class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white"
-      >
+    <div class="flex items-center gap-2">
+      <!-- DARK MODE -->
+      <button onclick="toggleDark()" 
+        class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+        🌗
+      </button>
+
+      <!-- LOGOUT -->
+      <button onclick="logout()"
+        class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white">
         Cerrar sesión
       </button>
-    
-
+    </div>
   </nav>
-
 
   <main class="max-w-2xl mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
 
@@ -48,42 +37,48 @@
 
     <form id="formEntrega" class="space-y-4">
 
-      <!-- Material con autocompletado -->
+      <!-- MATERIAL -->
       <div>
         <label class="block text-gray-700 dark:text-gray-300 mb-1">Material</label>
-        <input id="materialNombre" type="text" placeholder="Seleccione o escriba material"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-          list="listaMateriales" autocomplete="off" required />
-        <datalist id="listaMateriales">
-          <option value="Plásticos">
-          <option value="Vidrio">
-          <option value="Metales">
-          <option value="Residuos peligrosos">
-          <option value="Orgánicos">
-          <option value="Papel y Cartón">
-        </datalist>
+
+        <select id="materialNombre"
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
+          <option value="">Seleccione...</option>
+          <option value="Plástico">Plástico</option>
+          <option value="Vidrio">Vidrio</option>
+          <option value="Metal">Metal</option>
+          <option value="Residuos peligrosos">Residuos peligrosos</option>
+          <option value="Orgánicos">Orgánicos</option>
+          <option value="Papel">Papel</option>
+          <option value="Cartón">Cartón</option>
+        </select>
       </div>
 
-      <!-- Peso -->
+      <!-- PESO -->
       <div>
         <label class="block text-gray-700 dark:text-gray-300 mb-1">Peso (kg)</label>
-        <input type="number" id="pesoKg" step="0.01"
+        <input type="number" id="pesoKg" step="0.01" min="0"
           class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
           placeholder="Ej: 2.5" required>
       </div>
 
-      <!-- Contenedor -->
+      <!-- ID CONTENEDOR -->
       <div>
-        <label class="block text-gray-700 dark:text-gray-300 mb-1">ID Contenedor</label>
+        <label class="block text-gray-700 dark:text-gray-300 mb-1">ID Contenedor (opcional)</label>
         <input type="number" id="idContenedor"
           class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
-          placeholder="Opcional">
+          placeholder="Ej: 1">
       </div>
 
-      <!-- Mensajes -->
+      <!-- INFO -->
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Si no ingresa un ID de contenedor, el sistema usará automáticamente su ubicación actual.
+      </p>
+
+      <!-- MENSAJES -->
       <div id="msg" class="text-center mt-3"></div>
 
-      <!-- Botón -->
+      <!-- SUBMIT -->
       <button id="btnEnviar" type="submit" 
         class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold">
         Registrar Entrega
@@ -94,3 +89,4 @@
   <script src="./src/rutas.js"></script>
 </body>
 </html>
+

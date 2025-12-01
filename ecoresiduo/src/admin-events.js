@@ -65,7 +65,7 @@ map.on("click", (e) => {
 // ========================
 async function cargarEventos() {
   try {
-    const res = await fetch("http://localhost:3000/events", {
+    const res = await fetch("http://localhost:3000/eventos", {
       credentials: "include",
     });
     const data = await res.json();
@@ -142,8 +142,8 @@ async function guardarEvento() {
   const editando = Boolean(idEvento.value);
 
   const url = editando
-    ? `http://localhost:3000/events/${idEvento.value}`
-    : "http://localhost:3000/events";
+    ? `http://localhost:3000/eventos/${idEvento.value}`
+    : "http://localhost:3000/eventos";
 
   const method = editando ? "PUT" : "POST";
 
@@ -204,7 +204,7 @@ async function eliminarEvento(id) {
   if (!confirm("¿Seguro que deseas eliminar este evento?")) return;
 
   try {
-    const res = await fetch(`http://localhost:3000/events/${id}`, {
+    const res = await fetch(`http://localhost:3000/eventos/${id}`, {
       method: "DELETE",
       credentials: "include",
     });

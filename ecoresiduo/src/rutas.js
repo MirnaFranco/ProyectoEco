@@ -6,17 +6,17 @@ const form = document.getElementById("formEntrega");
 const msg = document.getElementById("msg");
 const btnEnviar = document.getElementById("btnEnviar");
 
-// Lista de materiales permitidos
+// Lista válida
 const materialesValidos = [
-  "Plásticos",
+  "Plástico",
   "Vidrio",
-  "Metales",
+  "Metal",
   "Residuos peligrosos",
   "Orgánicos",
-  "Papel y Cartón",
+  "Papel",
+  "Cartón"
 ];
 
-// ====== Mostrar mensajes ======
 function mostrarMensaje(texto, tipo = "success") {
   msg.innerHTML = `
     <p class="p-2 rounded ${
@@ -27,32 +27,67 @@ function mostrarMensaje(texto, tipo = "success") {
   setTimeout(() => (msg.innerHTML = ""), 3000);
 }
 
-// ====== Enviar entrega ======
+function obtenerCoordenadas() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject("Geolocalización no disponible.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) =>
+        resolve({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+        }),
+      () => reject("No se pudo obtener la ubicación.")
+    );
+  });
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const materialNombre = materialInput.value.trim();
   const peso = parseFloat(pesoKg.value);
+  const contenedor = idContenedor.value.trim();
 
-  if (!materialNombre || isNaN(peso) || peso <= 0) {
-    mostrarMensaje("Complete todos los campos correctamente.", "error");
+  if (!materialesValidos.includes(materialNombre)) {
+    mostrarMensaje("Seleccione un material válido.", "error");
     return;
   }
 
-  // Validar que el material esté en la lista permitida
-  if (!materialesValidos.includes(materialNombre)) {
-    mostrarMensaje("Seleccione un material válido de la lista.", "error");
+  if (!peso || peso <= 0) {
+    mostrarMensaje("Ingrese un peso válido.", "error");
     return;
   }
 
   btnEnviar.disabled = true;
   btnEnviar.classList.add("opacity-50");
 
+  let latitud = null;
+  let longitud = null;
+
+  if (!contenedor) {
+    try {
+      const coords = await obtenerCoordenadas();
+      latitud = coords.lat;
+      longitud = coords.lon;
+    } catch (err) {
+      mostrarMensaje(err, "error");
+      btnEnviar.disabled = false;
+      btnEnviar.classList.remove("opacity-50");
+      return;
+    }
+  }
+
   try {
     const body = {
       materialNombre,
       pesoKg: peso,
-      idContenedor: idContenedor.value || null,
+      idContenedor: contenedor ? Number(contenedor) : null,
+      latitud,
+      longitud,
     };
 
     const res = await fetch("http://localhost:3000/entregas", {
@@ -62,10 +97,16 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify(body),
     });
 
-    const data = await res.json();
+    let data = {};
+    try {
+      data = await res.json();
+    } catch (_) {
+      mostrarMensaje("El servidor respondió con un formato no válido.", "error");
+      return;
+    }
 
     if (!res.ok) {
-      mostrarMensaje(data.message || "Error al registrar entrega", "error");
+      mostrarMensaje(data.message || "Error al registrar entrega.", "error");
       return;
     }
 
@@ -79,12 +120,9 @@ form.addEventListener("submit", async (e) => {
     btnEnviar.disabled = false;
     btnEnviar.classList.remove("opacity-50");
   }
-
 });
 
-// ========================
 // LOGOUT
-// ========================
 async function logout() {
   await fetch("http://localhost:3000/usuarios/logout", { credentials: "include" });
   window.location.href = "/index.html";

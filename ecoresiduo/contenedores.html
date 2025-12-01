@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alta de Contenedores</title>
+
+  <!-- Tailwind (local, sin CDN) -->
+  <link rel="stylesheet" href="../src/style.css">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-200 p-6">
+
+  <h1 class="text-3xl font-bold mb-4">Crear Contenedor</h1>
+
+  <!-- FORMULARIO -->
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-3xl">
+    
+    <label class="block mb-2 font-semibold">Nombre Identificador</label>
+    <input id="nombre" type="text" class="w-full p-2 rounded bg-gray-700 mb-4">
+
+    <label class="block mb-2 font-semibold">Dirección</label>
+    <input id="direccion" type="text" class="w-full p-2 rounded bg-gray-700 mb-4">
+
+    <label class="block mb-2 font-semibold">Materiales aceptados</label>
+    <select id="materiales" multiple class="w-full p-2 rounded bg-gray-700 mb-4">
+      <option value="Plástico">Plástico</option>
+      <option value="Vidrio">Vidrio</option>
+      <option value="Metales">Metales</option>
+      <option value="Residuos peligrosos">Residuos peligrosos</option>
+      <option value="Orgánicos">Orgánicos</option>
+      <option value="Papel">Papel</option>
+      <option value="Cartón">Cartón</option>
+    </select>
+
+    <label class="block mb-2 font-semibold">Días y horarios</label>
+    <input id="horarios" type="text" class="w-full p-2 rounded bg-gray-700 mb-4">
+
+    <p class="mt-4 font-semibold">📍 Seleccione la ubicación en el mapa</p>
+    <div id="map" class="h-72 rounded-lg mt-2 mb-4"></div>
+
+    <div class="flex gap-4">
+      <div>
+        <label class="block mb-1">Latitud</label>
+        <input id="lat" type="text" readonly class="p-2 rounded bg-gray-700">
+      </div>
+
+      <div>
+        <label class="block mb-1">Longitud</label>
+        <input id="lng" type="text" readonly class="p-2 rounded bg-gray-700">
+      </div>
+    </div>
+
+    <button id="guardarBtn" class="mt-6 w-full bg-green-600 hover:bg-green-700 p-3 rounded font-bold">
+      Guardar Contenedor
+    </button>
+
+    <p id="status" class="mt-4 text-lg font-semibold"></p>
+
+  </div>
+
+  <!-- JS -->
+  <script src="./src/contenedores.js"></script>
+
+</body>
+</html>
