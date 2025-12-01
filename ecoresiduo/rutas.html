@@ -15,13 +15,11 @@
     <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">♻ Registrar Entrega</h1>
 
     <div class="flex items-center gap-2">
-      <!-- DARK MODE -->
       <button onclick="toggleDark()" 
         class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
         🌗
       </button>
 
-      <!-- LOGOUT -->
       <button onclick="logout()"
         class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white">
         Cerrar sesión
@@ -29,20 +27,19 @@
     </div>
   </nav>
 
-  <main class="max-w-2xl mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+  <main class="max-w-3xl mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
 
     <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
       Nueva Entrega de Material
     </h2>
 
+    <!-- FORMULARIO -->
     <form id="formEntrega" class="space-y-4">
 
-      <!-- MATERIAL -->
       <div>
-        <label class="block text-gray-700 dark:text-gray-300 mb-1">Material</label>
-
+        <label class="block">Material</label>
         <select id="materialNombre"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700">
           <option value="">Seleccione...</option>
           <option value="Plástico">Plástico</option>
           <option value="Vidrio">Vidrio</option>
@@ -54,39 +51,48 @@
         </select>
       </div>
 
-      <!-- PESO -->
       <div>
-        <label class="block text-gray-700 dark:text-gray-300 mb-1">Peso (kg)</label>
+        <label class="block">Peso (kg)</label>
         <input type="number" id="pesoKg" step="0.01" min="0"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
-          placeholder="Ej: 2.5" required>
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700">
       </div>
 
-      <!-- ID CONTENEDOR -->
       <div>
-        <label class="block text-gray-700 dark:text-gray-300 mb-1">ID Contenedor (opcional)</label>
+        <label class="block">ID Contenedor (opcional)</label>
         <input type="number" id="idContenedor"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
-          placeholder="Ej: 1">
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700">
       </div>
 
-      <!-- INFO -->
       <p class="text-sm text-gray-600 dark:text-gray-400">
-        Si no ingresa un ID de contenedor, el sistema usará automáticamente su ubicación actual.
+        Si no ingresa un ID, se usará automáticamente su ubicación.
       </p>
 
-      <!-- MENSAJES -->
-      <div id="msg" class="text-center mt-3"></div>
+      <div id="msg"></div>
 
-      <!-- SUBMIT -->
       <button id="btnEnviar" type="submit" 
-        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold">
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">
         Registrar Entrega
       </button>
     </form>
+
+    <!-- TABLA DE ENTREGAS -->
+    <h2 class="text-xl font-semibold text-gray-100 mt-10">Historial de entregas</h2>
+
+    <table class="w-full mt-4 text-left border-collapse" id="tablaEntregas">
+      <thead>
+        <tr class="bg-gray-700 text-white">
+          <th class="p-2">ID</th>
+          <th class="p-2">Material</th>
+          <th class="p-2">Peso</th>
+          <th class="p-2">Contenedor</th>
+          <th class="p-2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyEntregas" class="text-gray-200"></tbody>
+    </table>
+
   </main>
 
   <script src="./src/rutas.js"></script>
 </body>
 </html>
-

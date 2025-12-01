@@ -1,12 +1,16 @@
-// Elementos
+// =========================
+// ELEMENTOS
+// =========================
 const materialInput = document.getElementById("materialNombre");
 const pesoKg = document.getElementById("pesoKg");
 const idContenedor = document.getElementById("idContenedor");
 const form = document.getElementById("formEntrega");
 const msg = document.getElementById("msg");
 const btnEnviar = document.getElementById("btnEnviar");
+const tbody = document.getElementById("tbodyEntregas");
 
-// Lista válida
+let modoEdicion = null; // almacena ID si estamos editando
+
 const materialesValidos = [
   "Plástico",
   "Vidrio",
@@ -19,32 +23,55 @@ const materialesValidos = [
 
 function mostrarMensaje(texto, tipo = "success") {
   msg.innerHTML = `
-    <p class="p-2 rounded ${
-      tipo === "success"
-        ? "bg-green-200 text-green-800"
-        : "bg-red-200 text-red-800"
-    }">${texto}</p>`;
+    <p class="p-2 rounded ${tipo === "success" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}">
+      ${texto}
+    </p>`;
   setTimeout(() => (msg.innerHTML = ""), 3000);
 }
 
-function obtenerCoordenadas() {
+async function obtenerCoordenadas() {
   return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject("Geolocalización no disponible.");
-      return;
-    }
+    if (!navigator.geolocation) return reject("Geolocalización no disponible.");
 
     navigator.geolocation.getCurrentPosition(
-      (pos) =>
-        resolve({
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-        }),
+      pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
       () => reject("No se pudo obtener la ubicación.")
     );
   });
 }
 
+// =========================
+// LISTAR ENTREGAS AL CARGAR
+// =========================
+document.addEventListener("DOMContentLoaded", cargarEntregas);
+
+async function cargarEntregas() {
+  tbody.innerHTML = "";
+
+  const res = await fetch("http://localhost:3000/entregas", { credentials: "include" });
+  const data = await res.json();
+
+  data.forEach(e => agregarFila(e));
+}
+
+function agregarFila(e) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td class="p-2">${e.idEntrega}</td>
+    <td class="p-2">${e.materialNombre}</td>
+    <td class="p-2">${e.pesoKg} kg</td>
+    <td class="p-2">${e.idContenedor ?? "GPS"}</td>
+    <td class="p-2 flex gap-2">
+      <button class="bg-blue-600 px-2 py-1 rounded" onclick="editarEntrega(${e.idEntrega})">Editar</button>
+      <button class="bg-red-600 px-2 py-1 rounded" onclick="eliminarEntrega(${e.idEntrega})">Eliminar</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+}
+
+// =========================
+// SUBMIT DEL FORMULARIO
+// =========================
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -53,20 +80,18 @@ form.addEventListener("submit", async (e) => {
   const contenedor = idContenedor.value.trim();
 
   if (!materialesValidos.includes(materialNombre)) {
-    mostrarMensaje("Seleccione un material válido.", "error");
+    mostrarMensaje("Seleccione un material válido", "error");
     return;
   }
 
   if (!peso || peso <= 0) {
-    mostrarMensaje("Ingrese un peso válido.", "error");
+    mostrarMensaje("Ingrese un peso válido", "error");
     return;
   }
 
   btnEnviar.disabled = true;
-  btnEnviar.classList.add("opacity-50");
 
-  let latitud = null;
-  let longitud = null;
+  let latitud = null, longitud = null;
 
   if (!contenedor) {
     try {
@@ -76,53 +101,83 @@ form.addEventListener("submit", async (e) => {
     } catch (err) {
       mostrarMensaje(err, "error");
       btnEnviar.disabled = false;
-      btnEnviar.classList.remove("opacity-50");
       return;
     }
   }
 
-  try {
-    const body = {
-      materialNombre,
-      pesoKg: peso,
-      idContenedor: contenedor ? Number(contenedor) : null,
-      latitud,
-      longitud,
-    };
+  const body = {
+    materialNombre,
+    pesoKg: peso,
+    idContenedor: contenedor ? Number(contenedor) : null,
+    latitud,
+    longitud
+  };
 
-    const res = await fetch("http://localhost:3000/entregas", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+  // Modo edición → PUT
+  const url = modoEdicion
+    ? `http://localhost:3000/entregas/${modoEdicion}`
+    : "http://localhost:3000/entregas";
 
-    let data = {};
-    try {
-      data = await res.json();
-    } catch (_) {
-      mostrarMensaje("El servidor respondió con un formato no válido.", "error");
-      return;
-    }
+  const method = modoEdicion ? "PUT" : "POST";
 
-    if (!res.ok) {
-      mostrarMensaje(data.message || "Error al registrar entrega.", "error");
-      return;
-    }
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(body)
+  });
 
-    mostrarMensaje(`Entrega registrada. Puntos ganados: ${data.puntos}`, "success");
-    form.reset();
+  const data = await res.json();
 
-  } catch (err) {
-    console.error(err);
-    mostrarMensaje("Error de conexión", "error");
-  } finally {
+  if (!res.ok) {
+    mostrarMensaje(data.message || "Error", "error");
     btnEnviar.disabled = false;
-    btnEnviar.classList.remove("opacity-50");
+    return;
   }
+
+  mostrarMensaje(modoEdicion ? "Entrega actualizada" : "Entrega registrada");
+
+  form.reset();
+  modoEdicion = null;
+  tbody.innerHTML = "";
+  cargarEntregas();
+
+  btnEnviar.disabled = false;
 });
 
+// =========================
+// EDITAR ENTREGA
+// =========================
+async function editarEntrega(id) {
+  modoEdicion = id;
+
+  const res = await fetch(`http://localhost:3000/entregas/${id}`, { credentials: "include" });
+  const e = await res.json();
+
+  materialInput.value = e.materialNombre;
+  pesoKg.value = e.pesoKg;
+  idContenedor.value = e.idContenedor ?? "";
+
+  mostrarMensaje("Modo edición activado");
+}
+
+// =========================
+// ELIMINAR ENTREGA
+// =========================
+async function eliminarEntrega(id) {
+  if (!confirm("¿Eliminar entrega?")) return;
+
+  await fetch(`http://localhost:3000/entregas/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
+
+  cargarEntregas();
+}
+
+// =========================
 // LOGOUT
+// =========================
 async function logout() {
   await fetch("http://localhost:3000/usuarios/logout", { credentials: "include" });
   window.location.href = "/index.html";
