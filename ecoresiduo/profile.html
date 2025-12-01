@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ecopuntos - Mi Perfil</title>
+  <link rel="stylesheet" href="src/style.css">
+  
+
+
+  <!-- HeroIcons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+
+  <!-- NAVBAR -->
+  <nav class="bg-green-600 text-white px-6 py-4 flex justify-between items-center shadow">
+    <h1 class="text-xl font-bold flex items-center gap-2">
+      ♻️ Mis EcoPuntos
+    </h1>
+
+    <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600">
+      Cerrar sesión
+    </button>
+  </nav>
+
+  <main class="max-w-5xl mx-auto mt-6 p-4">
+
+    <!-- DATOS DEL USUARIO -->
+    <section class="bg-white dark:bg-gray-800 shadow rounded p-4 mb-6">
+      <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
+        <i data-feather="user"></i> Mi Información
+      </h2>
+
+      <div id="profileInfo" class="space-y-1 text-gray-700 dark:text-gray-300">
+        <!-- Se completa desde JS -->
+      </div>
+    </section>
+
+    <!-- ENTREGAS DE MATERIAL -->
+    <section class="bg-white dark:bg-gray-800 shadow rounded p-4 mb-6">
+      <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
+        <i data-feather="archive"></i> Historial de Entregas
+      </h2>
+
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="border-b border-gray-600">
+            <th class="p-2">Material</th>
+            <th class="p-2">Peso</th>
+            <th class="p-2">Puntos</th>
+            <th class="p-2">Estado</th>
+            <th class="p-2">Contenedor</th>
+            <th class="p-2">Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="tablaEntregas"></tbody>
+      </table>
+    </section>
+
+    <!-- PARTICIPACIÓN EN EVENTOS -->
+    <section class="bg-white dark:bg-gray-800 shadow rounded p-4 mb-10">
+      <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
+        <i data-feather="award"></i> Participación en Eventos
+      </h2>
+
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="border-b border-gray-600">
+            <th class="p-2">Transacción</th>
+            <th class="p-2">Puntos</th>
+            <th class="p-2">Fecha</th>
+            <th class="p-2">Referencia</th>
+          </tr>
+        </thead>
+        <tbody id="tablaEventos"></tbody>
+      </table>
+    </section>
+
+  </main>
+
+<script>
+  feather.replace();
+</script>
+
+<script type="module" src="./src/profile.js"></script>
+</body>
+</html>
