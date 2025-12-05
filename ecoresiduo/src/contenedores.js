@@ -9,52 +9,87 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 let marker;
 
-// CLICK EN EL MAPA → RELLENA LAT & LNG
+// CLICK EN EL MAPA
 map.on("click", (e) => {
   const { lat, lng } = e.latlng;
-
   document.getElementById("lat").value = lat.toFixed(6);
   document.getElementById("lng").value = lng.toFixed(6);
 
   if (marker) map.removeLayer(marker);
-
   marker = L.marker([lat, lng]).addTo(map);
 });
 
-// CONTENEDORES CARGADOS EN MEMORIA PARA MOSTRARLOS
+// =======================
+// MEMORIA LOCAL
+// =======================
 let listaContenedores = [];
+let modoEdicion = false;
+let idEditando = null;
 
 // =======================
-// GUARDAR CONTENEDOR
+// BOTONES LOGOUT Y DARK MODE
+// =======================
+document.getElementById("logoutBtn").addEventListener("click", logout);
+document.getElementById("toggleDark").addEventListener("click", () => {
+  document.documentElement.classList.toggle("dark");
+});
+
+// =======================
+// GUARDAR / EDITAR
 // =======================
 document.getElementById("guardarBtn").addEventListener("click", async () => {
-  const inputNombre = document.getElementById("nombre").value;
-  const inputDireccion = document.getElementById("direccion").value;
-  const inputHorarios = document.getElementById("horarios").value;
-  const inputLat = document.getElementById("lat").value;
-  const inputLng = document.getElementById("lng").value;
+  const nombre = document.getElementById("nombre").value;
+  const direccion = document.getElementById("direccion").value;
+  const horarios = document.getElementById("horarios").value;
+  const lat = Number(document.getElementById("lat").value);
+  const lng = Number(document.getElementById("lng").value);
 
-  // MATERIAL MULTIPLE
   const select = document.getElementById("materiales");
-  const materiales = Array.from(select.selectedOptions)
-    .map(opt => opt.value)
-    .join(", ");
+  const materiales = Array.from(select.selectedOptions).map(o => o.value).join(", ");
 
-  if (!inputNombre || !inputLat || !inputLng || !materiales) {
-    document.getElementById("status").innerText =
-      "⚠️ Complete todos los campos obligatorios.";
+  if (!nombre || !lat || !lng || !materiales) {
+    document.getElementById("status").innerText = "⚠️ Complete los campos obligatorios.";
     return;
   }
 
   const contenedor = {
-    nombreIdentificador: inputNombre,
-    direccion: inputDireccion,
-    latitud: inputLat,
-    longitud: inputLng,
+    nombreIdentificador: nombre,
+    direccion,
+    latitud: lat,
+    longitud: lng,
     materialesAceptados: materiales,
-    diasHorariosRecoleccion: inputHorarios
+    diasHorariosRecoleccion: horarios
   };
 
+  if (modoEdicion) {
+    try {
+      const res = await fetch(`http://localhost:3000/contenedores/${idEditando}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(contenedor)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        document.getElementById("status").innerText = "✅ Contenedor actualizado.";
+        listaContenedores = listaContenedores.map(c =>
+          c.idContenedor === idEditando ? data.contenedor : c
+        );
+        renderContenedores();
+        limpiarFormulario();
+        modoEdicion = false;
+        idEditando = null;
+      } else {
+        document.getElementById("status").innerText = "❌ Error: " + data.message;
+      }
+    } catch {
+      document.getElementById("status").innerText = "❌ Error de conexión.";
+    }
+    return;
+  }
+
+  // CREAR
   try {
     const res = await fetch("http://localhost:3000/contenedores", {
       method: "POST",
@@ -65,23 +100,15 @@ document.getElementById("guardarBtn").addEventListener("click", async () => {
     const data = await res.json();
 
     if (res.ok) {
-      document.getElementById("status").innerText =
-        "✅ Contenedor creado con éxito.";
-
-      // lo agregamos a la lista local
+      document.getElementById("status").innerText = "✅ Contenedor creado.";
       listaContenedores.push(data.contenedor);
-
-      // mostrarlo en pantalla
       renderContenedores();
-
-      // limpiar formulario
       limpiarFormulario();
     } else {
-      document.getElementById("status").innerText = "❌ Error: " + data.message;
+      document.getElementById("status").innerText = "❌ " + data.message;
     }
-  } catch (err) {
+  } catch {
     document.getElementById("status").innerText = "❌ Error de conexión.";
-    console.error(err);
   }
 });
 
@@ -94,40 +121,37 @@ function limpiarFormulario() {
   document.getElementById("horarios").value = "";
   document.getElementById("lat").value = "";
   document.getElementById("lng").value = "";
+  document.getElementById("materiales").selectedIndex = -1;
 
   if (marker) map.removeLayer(marker);
+
+  modoEdicion = false;
+  idEditando = null;
 }
 
 // =======================
-// RENDERIZAR TARJETAS
+// RENDER LISTA
 // =======================
 function renderContenedores() {
   const contenedorLista = document.getElementById("contenedorLista");
   contenedorLista.innerHTML = "";
 
-  listaContenedores.forEach((c) => {
+  listaContenedores.forEach(c => {
     const card = document.createElement("div");
-    card.className =
-      "bg-gray-800 p-4 rounded-lg shadow-lg mb-4 border border-gray-700";
+    card.className = "bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-300 dark:border-gray-700";
 
     card.innerHTML = `
-      <h2 class="text-xl font-bold">${c.nombreIdentificador}</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-200">${c.nombreIdentificador}</h2>
       <p><b>Dirección:</b> ${c.direccion}</p>
       <p><b>Materiales:</b> ${c.materialesAceptados}</p>
       <p><b>Horario:</b> ${c.diasHorariosRecoleccion || "No especificado"}</p>
       <p><b>Lat:</b> ${c.latitud} | <b>Lng:</b> ${c.longitud}</p>
 
       <div class="flex gap-4 mt-3">
-        <button onclick="editarContenedor(${c.idContenedor})" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
-          Editar
-        </button>
-
-        <button onclick="eliminarContenedor(${c.idContenedor})" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded">
-          Eliminar
-        </button>
+        <button onclick="editarContenedor(${c.idContenedor})" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white">Editar</button>
+        <button onclick="eliminarContenedor(${c.idContenedor})" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white">Eliminar</button>
       </div>
     `;
-
     contenedorLista.appendChild(card);
   });
 }
@@ -135,40 +159,68 @@ function renderContenedores() {
 // =======================
 // ELIMINAR
 // =======================
-async function eliminarContenedor(id) {
+async function eliminarContenedor(idContenedor) {
   if (!confirm("¿Eliminar el contenedor?")) return;
 
   try {
-    await fetch(`http://localhost:3000/contenedores/${id}`, {
-      method: "DELETE",
-    });
-
-    listaContenedores = listaContenedores.filter(c => c.idContenedor !== id);
-
-    renderContenedores();
-  } catch (err) {
+    const res = await fetch(`http://localhost:3000/contenedores/${idContenedor}`, { method: "DELETE" });
+    if (res.ok) {
+      listaContenedores = listaContenedores.filter(c => c.idContenedor !== idContenedor);
+      renderContenedores();
+    } else {
+      alert("❌ No se pudo eliminar (ID no encontrado).");
+    }
+  } catch {
     alert("❌ Error eliminando contenedor.");
   }
 }
 
 // =======================
-// EDITAR (POR AHORA SOLO CARGA LOS DATOS)
+// EDITAR
 // =======================
-async function editarContenedor(id) {
-  const c = listaContenedores.find(x => x.idContenedor === id);
+function editarContenedor(idContenedor) {
+  const c = listaContenedores.find(x => x.idContenedor === idContenedor);
   if (!c) return;
+
+  modoEdicion = true;
+  idEditando = idContenedor;
 
   document.getElementById("nombre").value = c.nombreIdentificador;
   document.getElementById("direccion").value = c.direccion;
   document.getElementById("horarios").value = c.diasHorariosRecoleccion;
-
   document.getElementById("lat").value = c.latitud;
   document.getElementById("lng").value = c.longitud;
+
+  const select = document.getElementById("materiales");
+  const materiales = c.materialesAceptados.split(", ");
+  Array.from(select.options).forEach(opt => opt.selected = materiales.includes(opt.value));
 
   if (marker) map.removeLayer(marker);
   marker = L.marker([c.latitud, c.longitud]).addTo(map);
 
-  document.getElementById("status").innerText =
-    "✏️ Modo edición activado (pero falta implementar PUT).";
+  document.getElementById("status").innerText = "✏️ Modo edición activado. Guardar para actualizar.";
 }
 
+// =======================
+// CARGAR CONTENEDORES
+// =======================
+async function cargarContenedores() {
+  try {
+    const res = await fetch("http://localhost:3000/contenedores");
+    const data = await res.json();
+    listaContenedores = data.contenedores || [];
+    renderContenedores();
+  } catch (err) {
+    console.error("Error cargando contenedores", err);
+  }
+}
+
+cargarContenedores();
+
+// =======================
+// LOGOUT
+// =======================
+async function logout() {
+  await fetch("http://localhost:3000/usuarios/logout", { credentials: "include" });
+  window.location.href = "/index.html";
+}

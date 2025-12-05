@@ -1,119 +1,109 @@
 import './style.css';
-// Obtener elementos
-const welcome = document.getElementById("welcomeAdmin");
-const userTable = document.getElementById("userTable");
-const logoutBtn = document.getElementById("logoutBtn");
-const mensajeError = document.getElementById("mensajeError");
 
-// ✅ Validar sesión del admin al cargar
-async function validarSesion() {
-  try {
-    const res = await fetch("http://localhost:3000/usuarios/session", {
-      method: "GET",
-      credentials: "include"
-    });
-    const data = await res.json();
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (!data.ok || data.user.role !== "administrador") {
-      return window.location.href = "/login.html";
-    }
+  // ========================
+  // ELEMENTOS
+  // ========================
+  const toggleDarkBtn = document.getElementById("toggleDark");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-    welcome.textContent = `¡Bienvenido, ${data.user.email}!`;
-
-    cargarUsuarios();
-
-  } catch (error) {
-    console.error("Error verificando sesión:", error);
-    window.location.href = "/login.html";
-  }
-}
-
-// ✅ Cargar tabla de usuarios
-async function cargarUsuarios() {
-  try {
-    const res = await fetch("http://localhost:3000/usuarios", {
-      credentials: "include"
-    });
-    const users = await res.json();
-
-    userTable.innerHTML = users.map(u => `
-      <tr>
-        <td class="border px-4 py-2">${u.id}</td>
-        <td class="border px-4 py-2">${u.nombre}</td>
-        <td class="border px-4 py-2">${u.email}</td>
-        <td class="border px-4 py-2">${u.rol}</td>
-        <td class="border px-4 py-2 space-x-2">
-          <button class="bg-yellow-400 hover:bg-yellow-500 px-2 py-1 rounded" onclick="editarUsuario(${u.id})">Editar</button>
-          <button class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded" onclick="eliminarUsuario(${u.id})">Eliminar</button>
-        </td>
-      </tr>
-    `).join("");
-
-  } catch (err) {
-    mostrarError("Error al cargar usuarios.");
-    console.error(err);
-  }
-}
-
-// ✅ Función para mostrar errores
-function mostrarError(msg) {
-  mensajeError.textContent = msg;
-  mensajeError.classList.remove("hidden");
-  setTimeout(() => mensajeError.classList.add("hidden"), 5000);
-}
-
-// ✅ Editar usuario
-async function editarUsuario(id) {
-  const nuevoNombre = prompt("Ingrese el nuevo nombre del usuario:");
-  if (!nuevoNombre) return;
-
-  try {
-    const res = await fetch(`http://localhost:3000/usuarios/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre: nuevoNombre })
-    });
-    const data = await res.json();
-
-    if (!data.ok) return mostrarError(data.mensaje);
-
-    cargarUsuarios();
-  } catch (err) {
-    mostrarError("Error al actualizar usuario.");
-    console.error(err);
-  }
-}
-
-// ✅ Eliminar usuario
-async function eliminarUsuario(id) {
-  const confirmacion = confirm("¿Está seguro que desea eliminar este usuario?");
-  if (!confirmacion) return;
-
-  try {
-    const res = await fetch(`http://localhost:3000/usuarios/${id}`, {
-      method: "DELETE",
-      credentials: "include"
-    });
-    const data = await res.json();
-
-    if (!data.ok) return mostrarError(data.mensaje);
-
-    cargarUsuarios();
-  } catch (err) {
-    mostrarError("Error al eliminar usuario.");
-    console.error(err);
-  }
-}
-
-// ✅ Logout
-logoutBtn.addEventListener("click", async () => {
-  await fetch("http://localhost:3000/usuarios/logout", {
-    method: "POST",
-    credentials: "include"
+  // ========================
+  // MODO OSCURO
+  // ========================
+  toggleDarkBtn.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
   });
-  window.location.href = "/login.html";
+
+  // ========================
+  // LOGOUT FUNCIONAL
+  // ========================
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      const res = await fetch("http://localhost:3000/usuarios/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      if (res.ok || res.status === 204) {
+        window.location.href = "/login.html";
+      } else {
+        alert("No se pudo cerrar sesión. Intente nuevamente.");
+      }
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+      alert("No se pudo cerrar sesión. Intente nuevamente.");
+    }
+  });
+
+  // ========================
+  // VALIDAR SESIÓN
+  // ========================
+  async function validarSesion() {
+    try {
+      const res = await fetch("http://localhost:3000/usuarios/session", {
+        credentials: "include"
+      });
+      const data = await res.json();
+
+      if (!data.ok || data.user.role !== "administrador") {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      cargarMetricas();
+      cargarGraficos();
+
+    } catch (err) {
+      console.error("Error al validar sesión:", err);
+      window.location.href = "/login.html";
+    }
+  }
+
+  // ========================
+  // MÉTRICAS SIMULADAS
+  // ========================
+  function cargarMetricas() {
+    document.getElementById("usuariosTotal").textContent = 120;
+    document.getElementById("kgRecicladosTotal").textContent = 3500;
+    document.getElementById("kgRecicladosEsteMes").textContent = 450;
+  }
+
+  function cargarGraficos() {
+    const usuariosCtx = document.getElementById("usuariosChart").getContext("2d");
+    new Chart(usuariosCtx, {
+      type: "bar",
+      data: {
+        labels: ["Enero","Febrero","Marzo","Abril","Mayo"],
+        datasets: [{ label: "Usuarios", data: [12,25,34,20,15], backgroundColor:"#10B981" }]
+      }
+    });
+
+    const reciclajeCtx = document.getElementById("reciclajeChart").getContext("2d");
+    new Chart(reciclajeCtx, {
+      type: "line",
+      data: {
+        labels: ["Enero","Febrero","Marzo","Abril","Mayo"],
+        datasets: [{ label: "Kg Reciclados", data:[500,700,600,800,900], borderColor:"#059669", fill:false }]
+      }
+    });
+
+    const tendenciaCtx = document.getElementById("tendenciaChart").getContext("2d");
+    new Chart(tendenciaCtx, {
+      type: "line",
+      data: {
+        labels: ["Enero","Febrero","Marzo","Abril","Mayo"],
+        datasets: [{ label:"Tendencia", data:[400,600,500,700,650], borderColor:"#047857", fill:false }]
+      }
+    });
+  }
+
+  // ========================
+  // INICIO
+  // ========================
+  validarSesion();
+
 });
 
-// Ejecutar validación
-validarSesion();
+
+

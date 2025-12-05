@@ -1,10 +1,14 @@
-document.addEventListener("DOMContentLoaded", cargarPerfil);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarPerfil();
+  inicializarBotones();
+});
 
+// ========================
+// CARGAR PERFIL
+// ========================
 async function cargarPerfil() {
   try {
-    const res = await fetch("http://localhost:3000/profile", {
-      credentials: "include"
-    });
+    const res = await fetch("http://localhost:3000/perfil", { credentials: "include" });
 
     if (res.status === 401) {
       window.location.href = "/index.html";
@@ -12,7 +16,6 @@ async function cargarPerfil() {
     }
 
     const data = await res.json();
-    console.log("Perfil:", data);
 
     cargarInfoUsuario(data);
     cargarEntregas(data.historialEntregas);
@@ -23,9 +26,11 @@ async function cargarPerfil() {
   }
 }
 
+// ========================
+// CARGAR INFO USUARIO
+// ========================
 function cargarInfoUsuario(u) {
   const div = document.getElementById("profileInfo");
-
   div.innerHTML = `
     <p><strong>Nombre:</strong> ${u.nombre}</p>
     <p><strong>Email:</strong> ${u.email}</p>
@@ -35,6 +40,9 @@ function cargarInfoUsuario(u) {
   `;
 }
 
+// ========================
+// CARGAR ENTREGAS
+// ========================
 function cargarEntregas(lista) {
   const tbody = document.getElementById("tablaEntregas");
   tbody.innerHTML = "";
@@ -53,6 +61,9 @@ function cargarEntregas(lista) {
   });
 }
 
+// ========================
+// CARGAR EVENTOS
+// ========================
 function cargarEventos(eventos) {
   const tbody = document.getElementById("tablaEventos");
   tbody.innerHTML = "";
@@ -69,7 +80,23 @@ function cargarEventos(eventos) {
   });
 }
 
-async function logout() {
-  await fetch("http://localhost:3000/usuarios/logout", { credentials: "include" });
-  window.location.href = "/index.html";
+// ========================
+// BOTONES: Dark mode + Logout
+// ========================
+function inicializarBotones() {
+  // Toggle dark mode
+  document.getElementById("toggleDark").addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+  });
+
+  // Logout
+  document.getElementById("btnLogout").addEventListener("click", async () => {
+    try {
+      await fetch("http://localhost:3000/usuarios/logout", { credentials: "include" });
+      window.location.href = "/index.html";
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+      alert("Error al cerrar sesión");
+    }
+  });
 }

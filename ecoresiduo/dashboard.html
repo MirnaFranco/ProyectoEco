@@ -1,86 +1,61 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Reciclaje</title>
   <link rel="stylesheet" href="src/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-    /* Ajustes para modo oscuro */
-    .dark .leaflet-control {
-      background: #1f2937 !important;
-      color: white !important;
-    }
-    .leaflet-popup-content-wrapper {
-      font-size: 14px;
-    }
-  </style>
-
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-200 min-h-screen p-6">
 
-<!-- NAVBAR -->
+  <!-- NAVBAR -->
   <nav class="w-full bg-green-700 dark:bg-green-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
     <h1 class="text-xl font-bold">Dashboard del Sistema de Reciclaje</h1>
 
     <div class="flex items-center gap-4">
-      <!-- Botón modo oscuro -->
       <button id="toggleDark" class="py-1 px-3 bg-white text-gray-900 dark:bg-gray-700 dark:text-white rounded shadow">
         🌓 Modo
       </button>
-
-      <!-- Logout -->
-      <button
-        onclick="logout()"
-        class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white"
-      >
+      <button id="logoutBtn" class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white">
         Cerrar sesión
       </button>
     </div>
   </nav>
 
-
   <!-- Tarjetas métricas -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-    <div class="bg-white p-5 rounded shadow">
-      <p class="text-gray-500">Usuarios Totales</p>
-      <p id="usuariosTotal" class="text-2xl font-bold">0</p>
+    <div class="bg-white dark:bg-gray-800 p-5 rounded shadow">
+      <p class="text-gray-500 dark:text-gray-300">Usuarios Totales</p>
+      <p id="usuariosTotal" class="text-2xl font-bold text-gray-900 dark:text-gray-100">0</p>
     </div>
-    <div class="bg-white p-5 rounded shadow">
-      <p class="text-gray-500">Kg Reciclados Total</p>
-      <p id="kgRecicladosTotal" class="text-2xl font-bold">0</p>
+    <div class="bg-white dark:bg-gray-800 p-5 rounded shadow">
+      <p class="text-gray-500 dark:text-gray-300">Kg Reciclados Total</p>
+      <p id="kgRecicladosTotal" class="text-2xl font-bold text-gray-900 dark:text-gray-100">0</p>
     </div>
-    <div class="bg-white p-5 rounded shadow">
-      <p class="text-gray-500">Kg Reciclados Este Mes</p>
-      <p id="kgRecicladosEsteMes" class="text-2xl font-bold">0</p>
+    <div class="bg-white dark:bg-gray-800 p-5 rounded shadow">
+      <p class="text-gray-500 dark:text-gray-300">Kg Reciclados Este Mes</p>
+      <p id="kgRecicladosEsteMes" class="text-2xl font-bold text-gray-900 dark:text-gray-100">0</p>
     </div>
   </div>
 
   <!-- Gráficos -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-
-    <!-- Usuarios -->
-    <div class="bg-white p-5 rounded shadow">
-      <h2 class="text-lg font-bold mb-2">Usuarios del Sistema</h2>
+    <div class="bg-white dark:bg-gray-800 p-5 rounded shadow">
+      <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">Usuarios del Sistema</h2>
       <canvas id="usuariosChart" height="110"></canvas>
     </div>
-
-    <!-- Reciclaje Total -->
-    <div class="bg-white p-5 rounded shadow">
-      <h2 class="text-lg font-bold mb-2">Kg Reciclados (Total vs Mes)</h2>
+    <div class="bg-white dark:bg-gray-800 p-5 rounded shadow">
+      <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">Kg Reciclados (Total vs Mes)</h2>
       <canvas id="reciclajeChart" height="110"></canvas>
     </div>
-
-    <!-- Tendencia Últimos Meses -->
-    <div class="bg-white p-5 rounded shadow">
-      <h2 class="text-lg font-bold mb-2">Tendencia Mensual de Reciclaje</h2>
+    <div class="bg-white dark:bg-gray-800 p-5 rounded shadow">
+      <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">Tendencia Mensual de Reciclaje</h2>
       <canvas id="tendenciaChart" height="120"></canvas>
     </div>
-
   </div>
 
-  <!-- Script -->
-  <script type="module" src="src\dashboard.js"></script>
+  <script type="module" src="src/dashboard.js"></script>
 </body>
 </html>
+

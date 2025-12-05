@@ -33,6 +33,7 @@ body {
   padding: 1.5rem;
   transition: transform .3s ease, background-color .3s ease, box-shadow .25s ease;
   box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  word-break: break-word; /* Permite romper palabras largas */
 }
 
 .card:hover,
@@ -41,16 +42,23 @@ body {
   box-shadow: 0 10px 22px rgba(0,0,0,.12);
 }
 
-/* TIP CARD VERDE */
-.tip-card {
-  background: #f0fdf4;
-}
-
 /* TARJETAS en DARK */
 .dark .card,
 .dark .tip-card {
   background: #1e293b !important;
   color: #e2e8f0 !important;
+}
+
+/* h2 y p dentro de tarjetas */
+.card h2, .tip-card h2,
+.card p, .tip-card p {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* TIP CARD VERDE */
+.tip-card {
+  background: #f0fdf4;
 }
 
 /* ============================================
@@ -107,6 +115,8 @@ textarea {
   border-radius: 8px;
   width: 100%;
   transition: border-color .2s, box-shadow .2s;
+  word-break: break-word; /* Ajusta contenido largo */
+  white-space: normal;
 }
 
 input:focus,
@@ -132,18 +142,14 @@ textarea:focus {
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto; /* Ajusta ancho automáticamente */
 }
 
-th {
-  background: #e5e7eb;
+th, td {
   padding: 0.9rem .75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: .85rem;
-}
-
-td {
-  padding: 0.9rem .75rem;
+  text-align: left;
+  word-break: break-word;  /* Permite romper palabras largas */
+  white-space: normal;     /* Permite salto de línea */
 }
 
 tr {
@@ -307,6 +313,8 @@ tr:hover {
    RESPONSIVE
 ============================================ */
 @media (max-width: 768px) {
-  td, th { font-size: .85rem; }
-  .card { padding: 1.2rem; }
+  td, th { font-size: 0.85rem; }
+  .card { padding: 1rem; }
+  table { font-size: 0.85rem; }
+  table, tbody, tr, th, td { display: block; width: 100%; }
 }

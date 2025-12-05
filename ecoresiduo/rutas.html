@@ -1,27 +1,26 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es" class="light">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrar Entrega</title>
 
-  <!-- Tailwind ya compilado -->
+  <!-- Tailwind compilado -->
   <link rel="stylesheet" href="src/style.css">
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-200 min-h-screen">
 
   <!-- NAVBAR -->
-  <nav class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">♻ Registrar Entrega</h1>
+  <nav class="bg-green-600 dark:bg-green-800 text-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">♻ Registrar Entrega</h1>
 
     <div class="flex items-center gap-2">
-      <button onclick="toggleDark()" 
-        class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+      <button id="toggleDark" class="px-3 py-1 bg-white text-gray-900 dark:bg-gray-700 dark:text-white rounded shadow">
         🌗
       </button>
 
-      <button onclick="logout()"
-        class="py-1 px-3 bg-red-600 hover:bg-red-700 rounded text-white">
+      <button id="logoutBtn" class="py-1 px-3 bg-red-500 hover:bg-red-600 rounded text-white">
         Cerrar sesión
       </button>
     </div>
@@ -29,7 +28,7 @@
 
   <main class="max-w-3xl mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
 
-    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
       Nueva Entrega de Material
     </h2>
 
@@ -37,9 +36,9 @@
     <form id="formEntrega" class="space-y-4">
 
       <div>
-        <label class="block">Material</label>
+        <label class="block text-gray-900 dark:text-gray-100">Material</label>
         <select id="materialNombre"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700">
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
           <option value="">Seleccione...</option>
           <option value="Plástico">Plástico</option>
           <option value="Vidrio">Vidrio</option>
@@ -52,18 +51,18 @@
       </div>
 
       <div>
-        <label class="block">Peso (kg)</label>
+        <label class="block text-gray-900 dark:text-gray-100">Peso (kg)</label>
         <input type="number" id="pesoKg" step="0.01" min="0"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700">
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
       </div>
 
       <div>
-        <label class="block">ID Contenedor (opcional)</label>
+        <label class="block text-gray-900 dark:text-gray-100">ID Contenedor (opcional)</label>
         <input type="number" id="idContenedor"
-          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700">
+          class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
       </div>
 
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-700 dark:text-gray-300">
         Si no ingresa un ID, se usará automáticamente su ubicación.
       </p>
 
@@ -76,23 +75,35 @@
     </form>
 
     <!-- TABLA DE ENTREGAS -->
-    <h2 class="text-xl font-semibold text-gray-100 mt-10">Historial de entregas</h2>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-10 mb-2">Historial de entregas</h2>
 
-    <table class="w-full mt-4 text-left border-collapse" id="tablaEntregas">
-      <thead>
-        <tr class="bg-gray-700 text-white">
-          <th class="p-2">ID</th>
-          <th class="p-2">Material</th>
-          <th class="p-2">Peso</th>
-          <th class="p-2">Contenedor</th>
-          <th class="p-2">Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tbodyEntregas" class="text-gray-200"></tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left table-auto border border-gray-300 dark:border-gray-600">
+        <thead class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+          <tr>
+            <th class="p-2 border-b border-gray-400 dark:border-gray-600">ID</th>
+            <th class="p-2 border-b border-gray-400 dark:border-gray-600">Material</th>
+            <th class="p-2 border-b border-gray-400 dark:border-gray-600">Peso</th>
+            <th class="p-2 border-b border-gray-400 dark:border-gray-600">Contenedor</th>
+            <th class="p-2 border-b border-gray-400 dark:border-gray-600">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyEntregas" class="text-gray-900 dark:text-gray-100"></tbody>
+      </table>
+    </div>
 
   </main>
 
-  <script src="./src/rutas.js"></script>
+  <script type="module" src="./src/rutas.js"></script>
+
+  <script>
+    // Toggle modo oscuro
+    document.getElementById("toggleDark").addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark");
+    });
+  </script>
+
 </body>
 </html>
+
+
