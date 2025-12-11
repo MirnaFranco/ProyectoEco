@@ -67,10 +67,10 @@ function agregarFila(e) {
   const tr = document.createElement("tr");
   tr.innerHTML = `
     <td class="p-2 border-b border-gray-300 dark:border-gray-600">${e.idEntrega}</td>
-    <td class="p-2 border-b border-gray-300 dark:border-gray-600">${e.materialNombre}</td>
+    <td class="p-2 border-b border-gray-300 dark:border-gray-600">${e.material?.nombre ?? "Sin dato"}</td>
     <td class="p-2 border-b border-gray-300 dark:border-gray-600">${e.pesoKg} kg</td>
-    <td class="p-2 border-b border-gray-300 dark:border-gray-600">${e.idContenedor ?? "GPS"}</td>
-    <td class="p-2 border-b border-gray-300 dark:border-gray-600 flex gap-2">
+    <td class="p-2 border-b border-gray-300 dark;border-gray-600">${e.contenedor?.nombreIdentificador ?? e.idContenedor ?? "GPS"}</td>
+    <td class="p-2 border-b border-gray-300 dark;border-gray-600 flex gap-2">
       <button class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded" onclick="editarEntrega(${e.idEntrega})">Editar</button>
       <button class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded" onclick="eliminarEntrega(${e.idEntrega})">Eliminar</button>
     </td>
